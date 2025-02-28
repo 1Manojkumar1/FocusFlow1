@@ -12,8 +12,8 @@
             color: #f1f1f1;
         }
         .container {
-            max-width: 400px;
-            margin: auto;
+            width: 45%;
+            margin: 20px;
             padding: 20px;
             border: 1px solid #4CAF50;
             background: linear-gradient(140deg, #182d43, #000000, #1f3955);
@@ -54,25 +54,47 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Health Calculator</h2>
-        <div class="form-group">
-            <label for="height">Height (cm):</label>
-            <input type="number" id="height" required>
+    <div class="flex-container">
+        <div class="container">
+            <h2>Calorie Counter</h2>
+            <div class="form-group">
+                <label for="foodItem">Food Item:</label>
+                <input type="text" id="foodItem" required>
+            </div>
+            <div class="form-group">
+                <label for="foodWeight">Weight (grams):</label>
+                <input type="number" id="foodWeight" required>
+            </div>
+            <button onclick="addCalories()">Add</button>
+            <button onclick="resetCounter()">Delete All</button>
+            <div class="result" id="calorieResult"></div>
+            <div class="result" id="foodList"></div>
         </div>
-        <div class="form-group">
-            <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" required>
+
+        <div class="container">
+            <h2>Health Calculator</h2>
+            <div class="form-group">
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height" required>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" required>
+            </div>
+            <div class="form-group">
+                <label for="birthYear">Birth Year:</label>
+                <input type="number" id="birthYear" required>
+            </div>
+            <button onclick="calculateHealth()">Calculate</button>
+            <div class="result" id="result"></div>
         </div>
-        <div class="form-group">
-            <label for="birthYear">Birth Year:</label>
-            <input type="number" id="birthYear" required>
-        </div>
-        <button onclick="calculateHealth()">Calculate</button>
-        <div class="result" id="result"></div>
     </div>
 
     <script>
@@ -139,6 +161,64 @@
                 <p>Suggestions:</p>
                 ${suggestions}
             `;
+        }
+
+        const foodCalories = {
+            apple: 0.52,
+            banana: 0.89,
+            bread: 2.65,
+            chicken: 2.39,
+            rice: 1.30,
+            orange: 0.47,
+            potato: 0.77,
+            pasta: 1.31,
+            egg: 1.55,
+            milk: 0.64,
+            cheese: 4.02,
+            yogurt: 0.59,
+            fish: 2.06,
+            nuts: 5.76,
+            pizza: 2.66,
+            burger: 2.95,
+            fries: 3.12,
+            cake: 4.00,
+            chocolate: 5.46,
+            icecream: 2.07,
+            donut: 4.52,
+            // Add more food items and their calories per gram here
+        };
+
+        let totalCalories = 0;
+        let foodItemsList = [];
+
+        function addCalories() {
+            const foodItem = document.getElementById('foodItem').value.toLowerCase();
+            const foodWeight = parseFloat(document.getElementById('foodWeight').value);
+
+            if (!foodCalories[foodItem]) {
+                alert('Food item not found in the database');
+                return;
+            }
+
+            const calories = foodCalories[foodItem] * foodWeight;
+            totalCalories += calories;
+
+            foodItemsList.push({ item: foodItem, weight: foodWeight, calories: calories });
+
+            const calorieResultDiv = document.getElementById('calorieResult');
+            calorieResultDiv.innerHTML = `
+                <p>Total Calories: ${totalCalories.toFixed(2)} kcal</p>
+            `;
+
+            const foodListDiv = document.getElementById('foodList');
+            foodListDiv.innerHTML = '<h3>Food Items:</h3><ul>' + foodItemsList.map(food => `<li>${food.item} - ${food.weight}g (${food.calories.toFixed(2)} kcal)</li>`).join('') + '</ul>';
+        }
+
+        function resetCounter() {
+            totalCalories = 0;
+            foodItemsList = [];
+            document.getElementById('calorieResult').innerHTML = '';
+            document.getElementById('foodList').innerHTML = '';
         }
     </script>
 </body>
