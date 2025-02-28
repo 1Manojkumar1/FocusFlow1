@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            color: #f1f1f1;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #4CAF50;
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3a863e;
+        }
+        .result {
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Health Calculator</h2>
+        <div class="form-group">
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" required>
+        </div>
+        <div class="form-group">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" required>
+        </div>
+        <div class="form-group">
+            <label for="birthYear">Birth Year:</label>
+            <input type="number" id="birthYear" required>
+        </div>
+        <button onclick="calculateHealth()">Calculate</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateHealth() {
+            const height = parseFloat(document.getElementById('height').value) / 100;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const birthYear = parseInt(document.getElementById('birthYear').value);
+            const currentYear = new Date().getFullYear();
+
+            if (isNaN(height) || isNaN(weight) || isNaN(birthYear)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+
+            const bmi = weight / (height * height);
+            const age = currentYear - birthYear;
+
+            let bmiCategory = '';
+            let suggestions = '';
+            
+            if (bmi < 18.5) {
+                bmiCategory = 'Underweight';
+                suggestions = `
+                    <ul>
+                        <li>Increase calorie intake with nutrient-dense foods.</li>
+                        <li>Focus on strength training exercises to build muscle mass.</li>
+                        <li>Consult a healthcare provider to rule out underlying conditions.</li>
+                    </ul>
+                `;
+            } else if (bmi < 24.9) {
+                bmiCategory = 'Normal weight';
+                suggestions = `
+                    <ul>
+                        <li>Maintain a balanced diet with a variety of food groups.</li>
+                        <li>Continue with regular physical activity to stay fit.</li>
+                        <li>Keep track of your health with regular check-ups.</li>
+                    </ul>
+                `;
+            } else if (bmi < 29.9) {
+                bmiCategory = 'Overweight';
+                suggestions = `
+                    <ul>
+                        <li>Focus on a balanced diet, cutting back on processed foods.</li>
+                        <li>Engage in regular physical activity like cardio exercises.</li>
+                        <li>Consider speaking with a nutritionist for personalized advice.</li>
+                    </ul>
+                `;
+            } else {
+                bmiCategory = 'Obesity';
+                suggestions = `
+                    <ul>
+                        <li>Consult a healthcare professional about a weight loss plan.</li>
+                        <li>Follow a healthy, calorie-controlled diet.</li>
+                        <li>Increase physical activity, aiming for at least 150 minutes of exercise each week.</li>
+                        <li>Consider mental health support if emotional eating is a concern.</li>
+                    </ul>
+                `;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <p>Your BMI is: ${bmi.toFixed(2)} (${bmiCategory})</p>
+                <p>Your Age is: ${age}</p>
+                <p>Suggestions:</p>
+                ${suggestions}
+            `;
+        }
+    </script>
+</body>
+</html>

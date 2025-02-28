@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            background: linear-gradient(140deg, #182d43, #000000, #1f3955);
+            padding: 40px; /* Increased padding */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Increased shadow */
+            width: 80%; /* Increased width */
+            max-width: 600px; /* Set a maximum width */
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em; /* Increased font size */
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 15px; /* Increased padding */
+            margin-bottom: 15px; /* Increased margin */
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em; /* Increased font size */
+        }
+        button {
+            width: 100%;
+            padding: 15px; /* Increased padding */
+            border: none;
+            border-radius: 5px;
+            background: #082932;
+            color: #ecf0f1;
+            cursor: pointer;
+            font-size: 1.2em; /* Increased font size */
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #2c3e50;
+            margin: 10px 0; /* Increased margin */
+            padding: 15px; /* Increased padding */
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em; /* Increased font size */
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #e1531b;
+            cursor: pointer;
+            font-size: 1em; /* Decreased font size */
+            padding: 5px; /* Added padding */
+            margin-left: auto; /* Move to the right end */
+        }
+        .delete-btn:hover {
+            background: none;
+            border: none;
+            color: #8f330f;
+            cursor: pointer;
+            font-size: 1.1em; /* Decreased font size */
+            padding: 5px; /* Added padding */
+        }
+        .complete-checkbox {
+            margin-right: 10px;
+        }
+        .points {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        .points-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="points-display">Points: <span id="points">0</span></div>
+    <div class="container">
+        <h1>Task Management</h1>
+        <input type="text" id="taskInput" placeholder="Enter a task">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+    <script>
+        let points = 0;
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const task = taskInput.value.trim();
+
+            const validationMessage = getValidationMessage(task);
+            if (validationMessage) {
+                alert(validationMessage);
+                taskInput.value = '';  // Clear the input field for the user to retry
+                return;
+            }
+
+            const li = document.createElement('li');
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'complete-checkbox';
+            checkbox.onchange = function() {
+                if (checkbox.checked) {
+                    li.style.textDecoration = 'line-through';
+                    updatePoints(3);
+                } else {
+                    li.style.textDecoration = 'none';
+                    updatePoints(-3);
+                }
+            };
+
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(task));
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteBtn.onclick = function() {
+                taskList.removeChild(li);
+            };
+
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+
+            taskInput.value = ''; // Clear input after successfully adding a task
+        }
+
+        function updatePoints(value) {
+            points += value;
+            document.getElementById('points').textContent = points;
+        }
+
+        function getValidationMessage(task) {
+            if (task.length < 3) {
+                return 'Invalid task: Task must be at least 3 characters long.';
+            }
+            if (!/^[a-zA-Z0-9\s]+$/.test(task)) {
+                return 'Invalid task: Task contains invalid characters.';
+            }
+            if (isRandomText(task)) {
+                return 'Invalid task: Task appears to be random or meaningless text.';
+            }
+            if (isWastefulTask(task)) {
+                return 'Invalid task: This task is considered wasteful and non-productive.';
+            }
+            return null;
+        }
+
+        function isRandomText(task) {
+            const consonants = task.replace(/[^bcdfghjklmnpqrstvwxyz]/gi, '').length;
+            const vowels = task.replace(/[^aeiou]/gi, '').length;
+            const uniqueChars = new Set(task.replace(/\s+/g, '').toLowerCase()).size;
+            const taskLength = task.replace(/\s+/g, '').length;
+
+            // Check for more consonants than vowels and too few unique characters
+            if (consonants > vowels && uniqueChars < taskLength / 2) {
+                return true;
+            }
+
+            // Check for a lack of meaningful words by ensuring more vowels than consonants
+            // A task that has almost no vowels is more likely to be random
+            if (vowels < consonants / 2) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function isWastefulTask(task) {
+            const wastefulKeywords = [
+                'watching tv', 'watching reels', 'scrolling social media', 'playing games', 'watching youtube', 
+                'binge watching', 'watching netflix', 'scrolling instagram', 'scrolling facebook', 'watching movies',
+                'playing video games', 'wasting time on phone', 'scrolling through tiktok', 'browsing youtube', 
+                'watching shows', 'binge watching tv shows', 'playing mobile games', 'playing games on phone', 
+                'watching videos', 'watching streaming services', 'watching streaming content'
+            ];
+
+            // Convert task to lowercase and check if it contains any wasteful keywords
+            const taskLower = task.toLowerCase();
+            for (const keyword of wastefulKeywords) {
+                if (taskLower.includes(keyword)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>

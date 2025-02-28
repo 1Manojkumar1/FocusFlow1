@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Productivity</title>
+    <meta name="description" content="Your page description here">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <meta name="author" content="Your Name">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <!-- Brand Logo -->
+                <a href="index.html" class="navbar-brand">
+                    <img src="https://uploads-ssl.webflow.com/62434fa732124a0fb112aab4/62434fa732124a332512aaee_placeholder-1.svg" loading="lazy" alt="FocusFlow">
+                </a>
+                <!-- Mobile Menu Button -->
+                <button class="menu-button">
+                    <span class="menu-icon"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Left Side: Hero Image -->
+                <div class="hero-image">
+                    <img src="https://imgs.search.brave.com/5ElW_zdRr30FOb-Wpvtltvoc4H01ZZesdckQ-Kwl-40/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/Y3JlYXRlLnZpc3Rh/LmNvbS9hcGkvbWVk/aWEvc21hbGwvMTI0/MTQ0ODgwL3N0b2Nr/LXBob3RvLW1hbmFn/ZXItcGxhbm5pbmct/dG8taW5jcmVhc2Ut/ZWZmaWNpZW5jeQ.jpeg" alt="Hero Image">
+                </div>
+                <!-- Right Side: Hero Text and Form -->
+                <div class="hero-text">
+                    <h1>Your Personal Guide to Ultimate Productivity</h1>
+                    <p>Our platform gives you the tools to manage tasks, set achievable goals, track progress, and stay motivated. Take your productivity to the next level!</p>
+                    <!-- Subscription Form -->
+                    <form id="hero-form" class="hero-form">
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                        <button type="submit">Get Started</button>
+                    </form>
+                    <p class="alternate-signup">
+                        or <a href="#">Sign-up with Google</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Add event listener to form submission
+        document.getElementById('hero-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            const email = document.getElementById('email').value;
+
+            // Check if email is valid before redirecting
+            if (email) {
+                // Redirect to welcome page with email as a query parameter
+                window.location.href = `welcome.html?email=${encodeURIComponent(email)}`;
+            } else {
+                // Alert if the email is empty
+                alert("Please enter a valid email.");
+            }
+        });
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
